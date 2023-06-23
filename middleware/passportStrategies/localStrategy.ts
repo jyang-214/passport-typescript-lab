@@ -22,10 +22,24 @@ const localStrategy = new LocalStrategy(
 	}
 );
 
+declare global {
+	namespace Express {
+		interface User {
+			id: number;
+			name: string;
+			email: string;
+			password: string;
+		}
+	}
+}
+
 /*
 FIXED (types) 😭
 */
-passport.serializeUser(function (user: Express.User, done: any) {
+passport.serializeUser(function (
+	user: Express.User,
+	done: (err: any, id?: number) => void
+) {
 	done(null, user.id);
 });
 
