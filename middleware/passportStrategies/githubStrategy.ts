@@ -12,12 +12,7 @@ const githubStrategy: GitHubStrategy = new GitHubStrategy(
 		callbackURL: `${env.GITHUB_CALLBACK_URL}`,
 	},
 	function (accessToken: any, refreshToken: any, profile: any, done: any) {
-		// asynchronous verification, for effect...
 		process.nextTick(function () {
-			// To keep the example simple, the user's GitHub profile is returned to
-			// represent the logged-in user.  In a typical application, you would want
-			// to associate the GitHub account with a user record in your database,
-			// and return that user instead.
 			const gitUser = {
 				id: profile.id,
 				name: profile.username,
