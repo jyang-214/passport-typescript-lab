@@ -15,12 +15,12 @@ router.get(
 	passport.authenticate("github", { failureRedirect: "/login" }),
 	function (req, res) {
 		// Successful authentication, redirect home.
-		res.redirect("/");
+		res.redirect("/dashboard");
 	}
 );
 
 router.get("/login", forwardAuthenticated, (req, res) => {
-	res.render("login");
+	res.render("login", { message: req.flash("error") });
 });
 
 router.post(
@@ -28,7 +28,7 @@ router.post(
 	passport.authenticate("local", {
 		successRedirect: "/dashboard",
 		failureRedirect: "/auth/login",
-		failureMessage: true,
+		failureFlash: true,
 		// req.session.messages
 		/* FIX ME: 😭 failureMsg needed when login fails */
 	})

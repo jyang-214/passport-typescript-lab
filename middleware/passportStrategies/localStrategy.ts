@@ -12,13 +12,17 @@ const localStrategy = new LocalStrategy(
 		passwordField: "password",
 	},
 	(email, password, done) => {
-		const user = getUserByEmailIdAndPassword(email, password);
-		return user
-			? done(null, user)
-			: done(null, false, {
-					message:
-						"Your login details are not valid. Please try again",
-			  });
+		try {
+			const user = getUserByEmailIdAndPassword(email, password);
+			if (!user) {
+				return done(null, false, {
+					message: "Password is incorrect",
+				});
+			}
+			return done(null, user);
+		} catch (error) {
+			return done(null, false, { message: `${error}` });
+		}
 	}
 );
 

@@ -20,13 +20,13 @@ const database = [
 ];
 
 const userModel = {
-	/* FIXED ME (types) 😭 */
+	/* FIXED (types) 😭 */
 	findOne: (email: string) => {
 		const user = database.find((user) => user.email === email);
 		if (user) {
 			return user;
 		}
-		throw new Error(`Couldn't find user with email: ${email}`);
+		throw `Couldn't find user with email: ${email}`;
 	},
 	/* FIXED (types) 😭 */
 	findById: (id: number) => {

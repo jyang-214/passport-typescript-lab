@@ -1,30 +1,42 @@
 import { Strategy as GitHubStrategy } from "passport-github2";
 import { PassportStrategy } from "../../interfaces/index";
-import { Request } from "express";
-import { Profile } from "passport";
+import passport from "passport";
+import { database } from "../../models/userModel";
+import "dotenv/config";
+import { env } from "process";
 
 const githubStrategy: GitHubStrategy = new GitHubStrategy(
 	{
-		clientID: "9d999824538dc3ebe524",
-		clientSecret: "653cf28ccae28b5362d5f79a0fae5aa5d4d90af7",
-		callbackURL: "http://localhost:8000/auth/github/callback",
-		passReqToCallback: true,
+		clientID: `${env.GITHUB_CLIENT_ID}`,
+		clientSecret: `${env.GITHUB_CLIENT_SECRET}`,
+		callbackURL: `${env.GITHUB_CALLBACK_URL}`,
 	},
-
-	/* FIXED 😭 */
-	async (
-		req: Request,
-		accessToken: string,
-		refreshToken: string,
-		profile: Profile,
-		done: any
-	) => {
-		// email
-		// username
-		// {email, username} -> save into your databse
-		// done(null, {email, username})
+	function (accessToken: any, refreshToken: any, profile: any, done: any) {
+		// asynchronous verification, for effect...
+		process.nextTick(function () {
+			// To keep the example simple, the user's GitHub profile is returned to
+			// represent the logged-in user.  In a typical application, you would want
+			// to associate the GitHub account with a user record in your database,
+			// and return that user instead.
+			const gitUser = {
+				id: profile.id,
+				name: profile.username,
+				email: `${profile.username}@my.bcit.ca`,
+				password: `${profile.username}123`,
+			};
+			database.push(gitUser);
+			return done(null, profile);
+		});
 	}
 );
+
+passport.serializeUser((user, done) => {
+	done(null, user.id);
+});
+
+passport.deserializeUser(function (obj: any, done) {
+	done(null, obj);
+});
 
 const passportGitHubStrategy: PassportStrategy = {
 	name: "github",
